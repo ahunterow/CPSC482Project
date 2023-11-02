@@ -9,7 +9,6 @@ class QNode:
 
         # CHECK THIS
         self.num_children = 2**dim
-        self.NULL = 0
 
         # Constants for dim = 2
         self.NW = 0
@@ -20,7 +19,7 @@ class QNode:
 
         # Initialize a list with NULL children
         for i in range(0, self.num_children - 1):
-            self.children.append(self.NULL)
+            self.children.append(None)
 
     """Returns what quadrant of the node the passed subtree lies in."""
     def compare(self, subpoint):
@@ -43,18 +42,31 @@ class QNode:
         # Insert an element that is already present
         # We do not allow duplicates
         if direction == self.EQUAL:
-            return self.NULL
-
-        # Recursive case
-        if self.children[direction] != self.NULL:
-            return self.children[direction].insert(region, key)
+            return 1
 
         # Base case
-        else:
+        if self.children[direction] is None:
             self.children[direction] = QNode(region, self.dim, key)
+            return 0
 
+        # Recursive case
+        else:
+            return self.children[direction].insert(region, key)
 
+    def search_single_point(self, key):
+        direction = self.compare(key)
 
+        # The key is in the datastructure.
+        if direction == self.EQUAL:
+            return True
+
+        # Base case
+        if self.children[direction] is None:
+            return False
+
+        # Recursive case
+        else:
+            return self.children[direction].search_single_point(key)
 
 
     def delete(self, key):
