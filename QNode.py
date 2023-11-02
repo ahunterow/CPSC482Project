@@ -2,7 +2,7 @@
 class QNode:
 
     def __init__(self, region, dim, point):
-        self.region = region
+        self.region = region # used to represent colour
         self.point = point
         self.children = []
         self.dim = dim
@@ -21,6 +21,20 @@ class QNode:
         for i in range(0, self.num_children - 1):
             self.children.append(None)
 
+    """Tests if a singular point is within the passed region. Implemented for 2D data."""
+    def test_point_region(self, left, right, up, down, x, y):
+        if x >= left and x <= right and y <= up and y >= down:
+            return True
+        return False
+
+    """Tests if a passed region is within a passed region. Implemented for 2D data."""
+    def test_rect_region(self, left, right, up, down, tleft, tright, tup, tdown):
+        if tleft <= right and tright >= left and tup >= down and tdown <= up:
+            return True
+        return False
+
+    def search_region
+
     """Returns what quadrant of the node the passed subtree lies in."""
     def compare(self, subpoint):
         if (subpoint[0] == self.point[0]) and (subpoint[1] == self.point[1]):
@@ -36,6 +50,7 @@ class QNode:
             else:
                 return self.SW
 
+    """Creates a node in the Qtree with the passed key and the passed region"""
     def insert(self, region, key):
         direction = self.compare(key)
 
@@ -53,7 +68,8 @@ class QNode:
         else:
             return self.children[direction].insert(region, key)
 
-    def search_single_point(self, key):
+    """Returns true if the point passed is in the quad tree."""
+    def contains(self, key):
         direction = self.compare(key)
 
         # The key is in the datastructure.
@@ -67,6 +83,13 @@ class QNode:
         # Recursive case
         else:
             return self.children[direction].search_single_point(key)
+
+
+
+
+
+
+
 
 
     def delete(self, key):
