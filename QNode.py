@@ -114,10 +114,51 @@ class QNode:
     def delete(self, point):
         pass
 
+    """Helper function for the tree_build() function."""
+    def tree_helper(self, parent, qtree):
+        direction = parent.compare(self.point)
+
+        if direction == self.NW:
+            qtree.create_node("NW/" + str(self.point), self.point)
+
+            for node in self.children:
+                if not (node is None):
+                    node.tree_helper(self, qtree)
+
+        elif direction == self.NE:
+            qtree.create_node("NE/" + str(self.point), self.point)
+
+            for node in self.children:
+                if not (node is None):
+                    node.tree_helper(self, qtree)
+
+        elif direction == self.SW:
+            qtree.create_node("SW/" + str(self.point), self.point)
+
+            for node in self.children:
+                if not (node is None):
+                    node.tree_helper(self, qtree)
+
+        elif direction == self.SE:
+            qtree.create_node("SE/" + str(self.point), self.point)
+
+            for node in self.children:
+                if not (node is None):
+                    node.tree_helper(self, qtree)
+
+        else:
+            print("ERROR: equal comparison")
+
     """Returns a treelib tree of the node, used for illustration purposes."""
     def tree_build(self):
-        pass
+        qtree = tl.Tree
 
-    """Helper function for the tree_build() function."""
-    def tree_helper(self, parent, tree):
-        pass
+        # Create root
+        qtree.create_node(str(self.point), self.point)
+
+        # Call the helper on all the children.
+        for node in self.children:
+            if not (node is None):
+                node.tree_helper(self, qtree)
+
+        return qtree
