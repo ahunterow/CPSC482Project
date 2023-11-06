@@ -1,14 +1,14 @@
 
+import treelib as tl
+
 class QNode:
 
-    def __init__(self, region, dim, point):
-        self.region = region # used to represent colour
+    def __init__(self, point):
         self.point = point
         self.children = []
-        self.dim = dim
 
-        # CHECK THIS
-        self.num_children = 2**dim
+        # Changes by dimension of datastructure.
+        self.num_children = 4
 
         # Constants for dim = 2
         self.NW = 0
@@ -40,7 +40,7 @@ class QNode:
         if self.test_point_region(left, right, up, down, self.point):
             nodes.append(self)
 
-        # Recursively search the children
+        # Recursively search the children's regions, if they overlap.
         if not (self.children[self.NW] is None) and self.test_rect_region(
                 tleft, tright, tup, tdown, left, self.point[0], up, self.point[1]):
             self.children[self.NW].search_region(nodes, tleft, tright, tup, tdown, left, self.point[0], up,
@@ -77,7 +77,7 @@ class QNode:
                 return self.SW
 
     """Creates a node in the Qtree with the passed key and the passed region"""
-    def insert(self, region, point):
+    def insert(self, point):
         direction = self.compare(point)
 
         # Insert an element that is already present
@@ -87,12 +87,12 @@ class QNode:
 
         # Base case
         if self.children[direction] is None:
-            self.children[direction] = QNode(region, self.dim, point)
+            self.children[direction] = QNode(point)
             return 0
 
         # Recursive case
         else:
-            return self.children[direction].insert(region, point)
+            return self.children[direction].insert(point)
 
     """Returns true if the point passed is in the quad tree."""
     def contains(self, point):
@@ -110,14 +110,14 @@ class QNode:
         else:
             return self.children[direction].contains(point)
 
-
-
-
-
-
-
-
-
-    def delete(self, key):
+    """Relatively expensive. """
+    def delete(self, point):
         pass
 
+    """Returns a treelib tree of the node, used for illustration purposes."""
+    def tree_build(self):
+        pass
+
+    """Helper function for the tree_build() function."""
+    def tree_helper(self, parent, tree):
+        pass
