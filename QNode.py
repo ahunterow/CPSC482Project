@@ -114,6 +114,22 @@ class QNode:
         else:
             return self.children[direction].contains(point)
 
+    """Returns the node found at the passed point, if it is present."""
+    def search(self, point):
+        direction = self.compare(point)
+
+        # The key is in the datastructure.
+        if direction == self.EQUAL:
+            return self
+
+        # Base case
+        if self.children[direction] is None:
+            return None
+
+        # Recursive case
+        else:
+            return self.children[direction].contains(point)
+
     """Helper method for the delete_helper() function."""
     def reinsert(self, root):
         root.insert(self.point)
