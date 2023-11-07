@@ -3,6 +3,7 @@
 import treelib as tl
 
 from QNode import *
+from NDNode import *
 
 # Constants for search_region's initial call.
 MAXLEFT = -10
@@ -11,23 +12,23 @@ MAXUP = 10
 MAXDOWN = -10
 
 # root
-qtree = QNode((0, 0))
+# qtree = QNode((0, 0))
 
 # test data
-qtree.insert((-5,7))
-qtree.insert((-3,-4))
-qtree.insert((-4,4))
-qtree.insert((4,3))
-qtree.insert((8,-6))
-qtree.insert((-9,6))
-qtree.insert((3,-2))
-qtree.insert((6,7))
-qtree.insert((8,2))
-qtree.insert((4,-7))
-qtree.insert((-7,-8))
-
-tree = qtree.tree_build()
-tree.save2file("qtreeTest")
+# qtree.insert((-5,7))
+# qtree.insert((-3,-4))
+# qtree.insert((-4,4))
+# qtree.insert((4,3))
+# qtree.insert((8,-6))
+# qtree.insert((-9,6))
+# qtree.insert((3,-2))
+# qtree.insert((6,7))
+# qtree.insert((8,2))
+# qtree.insert((4,-7))
+# qtree.insert((-7,-8))
+#
+# tree = qtree.tree_build()
+# tree.save2file("qtreeTest")
 
 # print(qtree.delete((4, 3)))
 # print(qtree.delete((-5, 7)))

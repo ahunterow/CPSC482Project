@@ -1,22 +1,23 @@
 
 import treelib as tl
 
-"""Represents a node in a quad tree, which is itself a quad tree."""
-class QNode:
+"""Experimental. An attempt at an "N-dimensional quad tree," this class represents a Node within that tree,
+as well as the tree itself."""
+class NDNode:
 
     def __init__(self, point):
         self.point = point
         self.children = []
+        self.dim = len(self.point)
 
-        # Changes by dimension of datastructure.
-        self.num_children = 4
+        # CHECK THIS
+        self.num_children = 2 ** self.dim
 
-        # Constants for dim = 2
-        self.NW = 0
-        self.NE = 1
-        self.SW = 2
-        self.SE = 3
-        self.EQUAL = 4
+        # Equality constant
+        self.LESS = -1
+        self.EQUAL = 0
+        self.GREAT = 1
+        self.ROUNDING_DIRECTION = self.GREAT # This determines behaviour of point equality in certain dimensions.
 
         # Initialize a list with NULL children
         for i in range(0, self.num_children):
@@ -66,20 +67,38 @@ class QNode:
             self.children[self.SE].search_region(nodes, tleft, tright, tup, tdown, self.point[0], right, self.point[1],
                                                  down)
 
-    """Returns what quadrant of the node the passed subtree lies in."""
-    def compare(self, subpoint):
-        if (subpoint[0] == self.point[0]) and (subpoint[1] == self.point[1]):
-            return self.EQUAL
-        elif self.point[0] < subpoint[0]:
-            if self.point[1] < subpoint[1]:
-                return self.NE
-            else:
-                return self.SE
+    """Helper method of compare, returns a value, LESS indicating val is less than the sub_val, 
+        GREAT if val is greater than sub_val, and EQUAL if both arguments are equal."""
+    def compare_val(self, val, sub_val):
+        if val < sub_val:
+            return self.LESS
+        elif val > sub_val:
+            return self.GREAT
         else:
-            if self.point[1] < subpoint[1]:
-                return self.NW
+            return self.EQUAL
+    """Returns what subspace of the node the passed subtree lies in."""
+    def compare(self, subpoint):
+
+        direction = []
+
+        # Equality check
+        is_equal = True
+
+        # Make a list of comparisons across all dimensions.
+        for index , sub_val in enumerate(subpoint):
+            direction.append(self.compare_val(self.point[index], sub_val))
+
+            # Keep track of point equality
+            if direction[index] != self.EQUAL:
+                is_equal = False
+
+            # If there is equality in a dimension, alter it to the ROUNDING_DIRECTION
             else:
-                return self.SW
+                direction[index] = self.ROUNDING_DIRECTION
+
+
+
+        # These comparisons are a list of bits, effectively.
 
     """Creates a node in the Qtree with the passed key. Returns success status."""
     def insert(self, point):
@@ -92,7 +111,7 @@ class QNode:
 
         # Base case
         if self.children[direction] is None:
-            self.children[direction] = QNode(point)
+            self.children[direction] = NDNode(point)
             return 0
 
         # Recursive case
