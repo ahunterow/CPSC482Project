@@ -18,7 +18,7 @@ class QNode:
         self.EQUAL = 4
 
         # Initialize a list with NULL children
-        for i in range(0, self.num_children - 1):
+        for i in range(0, self.num_children):
             self.children.append(None)
 
     """Tests if a singular point is within the passed region. Implemented for 2D data."""
@@ -27,17 +27,21 @@ class QNode:
             return True
         return False
 
-    """Tests if a passed region is within a passed region. Implemented for 2D data."""
+    """Tests if a passed region overlaps a passed region. Implemented for 2D data."""
     def test_rect_region(self, tleft, tright, tup, tdown, left, right, up, down):
         if tleft <= right and tright >= left and tup >= down and tdown <= up:
             return True
         return False
 
-    """Fills a passed list with nodes within the passed region."""
+    """Fills a passed list with nodes within the passed region. The bounds are inclusive.
+        The search region is bounded by tleft, tright, tup, and tdown.
+        left, right, up, and down is the region that could overlap the search region.
+        For the first call, let left, right, up, down be set to the max and min values of the tree."""
     def search_region(self, nodes, tleft, tright, tup, tdown, left, right, up, down):
 
         # if this node lies in the region
-        if self.test_point_region(left, right, up, down, self.point):
+        if self.test_point_region(tleft, tright, tup, tdown, self.point):
+
             nodes.append(self)
 
         # Recursively search the children's regions, if they overlap.
@@ -76,7 +80,7 @@ class QNode:
             else:
                 return self.SW
 
-    """Creates a node in the Qtree with the passed key and the passed region"""
+    """Creates a node in the Qtree with the passed key. Returns success status."""
     def insert(self, point):
         direction = self.compare(point)
 
@@ -118,29 +122,30 @@ class QNode:
     def tree_helper(self, parent, qtree):
         direction = parent.compare(self.point)
 
+        # Test direction, add appropriate label, call method on children.
         if direction == self.NW:
-            qtree.create_node("NW/" + str(self.point), self.point)
+            qtree.create_node("NW/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
                     node.tree_helper(self, qtree)
 
         elif direction == self.NE:
-            qtree.create_node("NE/" + str(self.point), self.point)
+            qtree.create_node("NE/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
                     node.tree_helper(self, qtree)
 
         elif direction == self.SW:
-            qtree.create_node("SW/" + str(self.point), self.point)
+            qtree.create_node("SW/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
                     node.tree_helper(self, qtree)
 
         elif direction == self.SE:
-            qtree.create_node("SE/" + str(self.point), self.point)
+            qtree.create_node("SE/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
@@ -151,7 +156,7 @@ class QNode:
 
     """Returns a treelib tree of the node, used for illustration purposes."""
     def tree_build(self):
-        qtree = tl.Tree
+        qtree = tl.Tree()
 
         # Create root
         qtree.create_node(str(self.point), self.point)
