@@ -4,11 +4,11 @@ import treelib as tl
 
 from QNode import *
 
+# Constants for search_region's initial call.
 MAXLEFT = -10
 MAXRIGHT = 10
 MAXUP = 10
 MAXDOWN = -10
-
 
 # root
 qtree = QNode((0, 0))
@@ -28,6 +28,14 @@ qtree.insert((-7,-8))
 
 tree = qtree.tree_build()
 tree.save2file("qtreeTest")
+
+# print(qtree.delete((4, 3)))
+# print(qtree.delete((-5, 7)))
+# print(qtree.delete((8, -6)))
+# print(qtree.delete((-3, -4)))
+#
+# tree = qtree.tree_build()
+# tree.save2file("qtreeTest")
 
 # print(qtree.contains((-4,4)))
 

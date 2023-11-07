@@ -114,9 +114,58 @@ class QNode:
         else:
             return self.children[direction].contains(point)
 
-    """Relatively expensive. """
+    """Helper method for the delete_helper() function."""
+    def reinsert(self, root):
+        root.insert(self.point)
+
+        # Reinsert every stranded node back into the tree
+        for node in self.children:
+            if not (node is None):
+                node.reinsert(root)
+
+    """Helper method for the delete() function."""
+    def delete_helper(self, point, parent, root):
+        direction = self.compare(point)
+
+        # The point is located
+        if direction == self.EQUAL:
+
+            # Delete the subtree from the parent
+            reference_num = parent.compare(self.point)
+            parent.children[reference_num] = None
+
+            # Reinsert every stranded node back into the tree
+            for node in self.children:
+                if not (node is None):
+                    node.reinsert(root)
+
+            return 0
+
+        # Base case, the node to delete is not in the tree
+        if self.children[direction] is None:
+            return 1
+
+        # Recursive case, proceed to find the node.
+        else:
+            return self.children[direction].delete_helper(point, self, root)
+
+    """Relatively expensive. Deletes a passed point from the quad tree, returns success status.
+    Due to the reference to the tree being a QNode, there must always be at least one node in the tree.
+    Thus, it is enforced that one cannot delete the root."""
     def delete(self, point):
-        pass
+        direction = self.compare(point)
+
+        # Deleting the root.
+        if direction == self.EQUAL:
+            return 1
+
+        # Base case
+        if self.children[direction] is None:
+            return 1
+
+        # Recursive case
+        else:
+            return self.children[direction].delete_helper(point, self, self)
 
     """Helper function for the tree_build() function."""
     def tree_helper(self, parent, qtree):
