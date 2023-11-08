@@ -21,6 +21,8 @@ print(int("00001100", 2))
 # strung[1] = "f"
 # print(strong + strung)
 
+print(int(, 2))
+
 # test data
 # qtree.insert((-5,7))
 # qtree.insert((-3,-4))

@@ -23,28 +23,84 @@ class NDNode:
         for i in range(0, self.num_children):
             self.children.append(None)
 
-    """Tests if a singular point is within the passed region. Implemented for 2D data."""
-    def test_point_region(self, left, right, up, down, point):
-        if point[0] >= left and point[0] <= right and point[1] <= up and point[1] >= down:
-            return True
-        return False
+    """Tests if a singular point is within the passed bounds. Bounds should be a list of tuples.
+        Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
+        it follows that their must be as many tuples as dimensions in the point. Returns 1 if the point 
+        is present in the bounds, 0 if the point is not in the bounds, and -1 if an error occured."""
+    def test_point_region(self, point, bounds):
 
-    """Tests if a passed region overlaps a passed region. Implemented for 2D data."""
-    def test_rect_region(self, tleft, tright, tup, tdown, left, right, up, down):
-        if tleft <= right and tright >= left and tup >= down and tdown <= up:
-            return True
-        return False
+        # Checking that the right number of bounds has been passed
+        if len(point) != len(bounds):
+            print("ERROR: incorrect number of bounds for data.")
+            return -1
 
-    """Fills a passed list with nodes within the passed region. The bounds are inclusive.
-        The search region is bounded by tleft, tright, tup, and tdown.
-        left, right, up, and down is the region that could overlap the search region.
-        For the first call, let left, right, up, down be set to the max and min values of the tree."""
-    def search_region(self, nodes, tleft, tright, tup, tdown, left, right, up, down):
+        within_region = True
+
+        # Check each set of bounds
+        for index, bound in enumerate(bounds):
+            # Make sure we have valid bounds.
+            if not (bound[0] < bound[1]):
+                return -1
+
+            # if point not in bounds
+            if not (point[index] >= bound[0]) and (point[index] <= bound[1]):
+                within_region = False
+                break
+
+        if within_region:
+            return 1
+        else:
+            return 0
+
+    """Tests if a region overlaps with the passed bounds. Bounds should be a list of tuples, 
+        as should the region defined by test_bounds.
+        Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
+        it follows that their must be as many tuples as dimensions in the point. Returns 1 if the overlaps
+        the bounds, 0 if the does not overlap the bounds, and -1 if an error occured."""
+    def test_region_region(self, test_bounds, bounds):
+
+        # Checking that the right number of bounds has been passed
+        if len(test_bounds) != len(bounds):
+            print("ERROR: incorrect number of bounds for data.")
+            return -1
+
+        overlaps_region = True
+
+        # Check all dimensions for overlap
+        for index, bound in enumerate(bounds):
+            # Make sure we have valid bounds.
+            if not (bound[0] < bound[1]):
+                return -1
+
+            # if the region does not overlap.
+            if not (test_bounds[index][0] <= bound[1]) and (test_bounds[index][1] >= bound[0]):
+                overlaps_region = False
+                break
+
+        if overlaps_region:
+            return 1
+        else:
+            return 0
+
+    """TODO Fills a passed list with nodes within the passed region. The passed region is test_bounds, and it
+        is a list of tuples of bounds, of the form (lower, upper), one tuple for each
+        dimension of the data. The search bounds are inclusive.
+        For the first call, bounds should be a list of tuples of bounds, of the form (lower, upper), one tuple for each
+        dimension of the data, and these bounds should encompass the whole tree structure."""
+    def search_region(self, nodes, test_bounds, bounds):
 
         # if this node lies in the region
-        if self.test_point_region(tleft, tright, tup, tdown, self.point):
+        if self.test_point_region(self.point, test_bounds):
 
             nodes.append(self)
+
+        # Use the direction to restrict the bounds on the search space.
+
+        for direction, child in enumerate(self.children):
+
+            if not (child is None) and self.test_region_region(test_bounds, bounds):
+                child.search_region()
+
 
         # Recursively search the children's regions, if they overlap.
         if not (self.children[self.NW] is None) and self.test_rect_region(
@@ -99,6 +155,8 @@ class NDNode:
 
             direction = direction + str(comparison)
 
+        if is_equal:
+            return self.EQUAL
         # These comparisons are a list of bits. Taking these comparisons and treating them as a binary number
         # and converting them to decimal number allows mapping to a subspace within the list of children.
         subspace = int(direction, 2)
@@ -156,7 +214,7 @@ class NDNode:
         else:
             return self.children[direction].contains(point)
 
-    """Helper method for the delete_helper() function."""
+    """TODO Helper method for the delete_helper() function."""
     def reinsert(self, root):
         root.insert(self.point)
 
@@ -165,7 +223,7 @@ class NDNode:
             if not (node is None):
                 node.reinsert(root)
 
-    """Helper method for the delete() function."""
+    """TODO Helper method for the delete() function."""
     def delete_helper(self, point, parent, root):
         direction = self.compare(point)
 
@@ -191,7 +249,7 @@ class NDNode:
         else:
             return self.children[direction].delete_helper(point, self, root)
 
-    """Relatively expensive. Deletes a passed point from the quad tree, returns success status.
+    """TODO Relatively expensive. Deletes a passed point from the quad tree, returns success status.
     Due to the reference to the tree being a QNode, there must always be at least one node in the tree.
     Thus, it is enforced that one cannot delete the root."""
     def delete(self, point):
@@ -209,7 +267,7 @@ class NDNode:
         else:
             return self.children[direction].delete_helper(point, self, self)
 
-    """Helper function for the tree_build() function."""
+    """TODO Helper function for the tree_build() function."""
     def tree_helper(self, parent, qtree):
         direction = parent.compare(self.point)
 
@@ -245,7 +303,7 @@ class NDNode:
         else:
             print("ERROR: equal comparison")
 
-    """Returns a treelib tree of the node, used for illustration purposes."""
+    """TODO Returns a treelib tree of the node, used for illustration purposes."""
     def tree_build(self):
         qtree = tl.Tree()
 
