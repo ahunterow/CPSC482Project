@@ -12,7 +12,14 @@ MAXUP = 10
 MAXDOWN = -10
 
 # root
-# qtree = QNode((0, 0))
+qtree = QNode((0, 0))
+
+print(int("00001100", 2))
+
+# strong = ""
+# strung = "fgh"
+# strung[1] = "f"
+# print(strong + strung)
 
 # test data
 # qtree.insert((-5,7))

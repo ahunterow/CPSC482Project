@@ -14,8 +14,8 @@ class NDNode:
         self.num_children = 2 ** self.dim
 
         # Equality constant
-        self.LESS = -1
-        self.EQUAL = 0
+        self.LESS = 0
+        self.EQUAL = -1
         self.GREAT = 1
         self.ROUNDING_DIRECTION = self.GREAT # This determines behaviour of point equality in certain dimensions.
 
@@ -76,29 +76,35 @@ class NDNode:
             return self.GREAT
         else:
             return self.EQUAL
+
     """Returns what subspace of the node the passed subtree lies in."""
     def compare(self, subpoint):
 
-        direction = []
+        direction = ""
 
         # Equality check
         is_equal = True
 
-        # Make a list of comparisons across all dimensions.
-        for index , sub_val in enumerate(subpoint):
-            direction.append(self.compare_val(self.point[index], sub_val))
+        # Make a string of comparisons across all dimensions.
+        for index, sub_val in enumerate(subpoint):
+            comparison = self.compare_val(self.point[index], sub_val)
 
             # Keep track of point equality
-            if direction[index] != self.EQUAL:
+            if comparison != self.EQUAL:
                 is_equal = False
 
             # If there is equality in a dimension, alter it to the ROUNDING_DIRECTION
             else:
-                direction[index] = self.ROUNDING_DIRECTION
+                comparison = self.ROUNDING_DIRECTION
 
+            direction = direction + str(comparison)
 
+        # These comparisons are a list of bits. Taking these comparisons and treating them as a binary number
+        # and converting them to decimal number allows mapping to a subspace within the list of children.
+        subspace = int(direction, 2)
 
-        # These comparisons are a list of bits, effectively.
+        return subspace
+
 
     """Creates a node in the Qtree with the passed key. Returns success status."""
     def insert(self, point):
