@@ -21,8 +21,8 @@ qtree = QNode((0, 0))
 
 test = bin(4)
 test = test[slice(2, len(test))]
+test = test.zfill(8)
 print(test)
-
 # test data
 # qtree.insert((-5,7))
 # qtree.insert((-3,-4))

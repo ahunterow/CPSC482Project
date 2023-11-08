@@ -102,7 +102,8 @@ class NDNode:
                 # Get the comparisons that are made to get into this direction
                 # This means taking the direction and mapping it to a string of bits
                 comparisons = bin(direction)
-                comparisons = comparisons[slice(2, len(comparisons))] # trim off the "0b" at the start.
+                comparisons = comparisons[slice(2, len(comparisons))] # Trim off the "0b" at the start.
+                comparisons = comparisons.zfill(self.dim) # Add leading 0s on to the left as needed.
 
                 # Restrict bounds.
                 sub_bounds = bounds.copy()
@@ -111,37 +112,17 @@ class NDNode:
 
                     # If the node's value is greater, then restrict the upper bound.
                     # Otherwise, restrict the lower bound.
+                    # Done for every set of bounds
                     if int(comparisons[index]) == self.GREAT:
                         sub_bounds[index] = (bound[0], self.point[index])
                     else:
+                        sub_bounds[index] = (self.point[index], bound[1])
 
+                # if the tested bounds fall in the subspace defined by sub_bounds.
+                if self.test_region_region(test_bounds, sub_bounds):
+                    # Recursive case.
+                    child.search_region(nodes, test_bounds, sub_bounds)
 
-
-
-                if self.test_region_region(test_bounds, bounds):
-                    child.search_region()
-
-
-        # Recursively search the children's regions, if they overlap.
-        if not (self.children[self.NW] is None) and self.test_rect_region(
-                tleft, tright, tup, tdown, left, self.point[0], up, self.point[1]):
-            self.children[self.NW].search_region(nodes, tleft, tright, tup, tdown, left, self.point[0], up,
-                                                 self.point[1])
-
-        if not (self.children[self.NE] is None) and self.test_rect_region(
-                tleft, tright, tup, tdown, self.point[0], right, up, self.point[1]):
-            self.children[self.NE].search_region(nodes, tleft, tright, tup, tdown, self.point[0], right, up,
-                                                 self.point[1])
-
-        if not (self.children[self.SW] is None) and self.test_rect_region(
-                tleft, tright, tup, tdown, left, self.point[0], self.point[1], down):
-            self.children[self.SW].search_region(nodes, tleft, tright, tup, tdown, left, self.point[0], self.point[1],
-                                                 down)
-
-        if not (self.children[self.SE] is None) and self.test_rect_region(
-                tleft, tright, tup, tdown, self.point[0], right, self.point[1], down):
-            self.children[self.SE].search_region(nodes, tleft, tright, tup, tdown, self.point[0], right, self.point[1],
-                                                 down)
 
     """Helper method of compare, returns a value, LESS indicating val is less than the sub_val, 
         GREAT if val is greater than sub_val, and EQUAL if both arguments are equal."""
