@@ -14,14 +14,14 @@ MAXDOWN = -10
 # root
 qtree = QNode((0, 0))
 
-print(int("00001100", 2))
-
 # strong = ""
 # strung = "fgh"
 # strung[1] = "f"
 # print(strong + strung)
 
-print(int(, 2))
+test = bin(4)
+test = test[slice(2, len(test))]
+print(test)
 
 # test data
 # qtree.insert((-5,7))

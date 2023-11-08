@@ -98,8 +98,28 @@ class NDNode:
 
         for direction, child in enumerate(self.children):
 
-            if not (child is None) and self.test_region_region(test_bounds, bounds):
-                child.search_region()
+            if not (child is None):
+                # Get the comparisons that are made to get into this direction
+                # This means taking the direction and mapping it to a string of bits
+                comparisons = bin(direction)
+                comparisons = comparisons[slice(2, len(comparisons))] # trim off the "0b" at the start.
+
+                # Restrict bounds.
+                sub_bounds = bounds.copy()
+
+                for index, bound in enumerate(sub_bounds):
+
+                    # If the node's value is greater, then restrict the upper bound.
+                    # Otherwise, restrict the lower bound.
+                    if int(comparisons[index]) == self.GREAT:
+                        sub_bounds[index] = (bound[0], self.point[index])
+                    else:
+
+
+
+
+                if self.test_region_region(test_bounds, bounds):
+                    child.search_region()
 
 
         # Recursively search the children's regions, if they overlap.
