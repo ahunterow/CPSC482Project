@@ -23,6 +23,7 @@ class NDNode:
         for i in range(0, self.num_children):
             self.children.append(None)
 
+
     """Tests if a singular point is within the passed bounds. Bounds should be a list of tuples.
         Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
         it follows that their must be as many tuples as dimensions in the point. Returns 1 if the point 
@@ -82,7 +83,7 @@ class NDNode:
         else:
             return 0
 
-    """TODO Fills a passed list with nodes within the passed region. The passed region is test_bounds, and it
+    """Fills a passed list with nodes within the passed region. The passed region is test_bounds, and it
         is a list of tuples of bounds, of the form (lower, upper), one tuple for each
         dimension of the data. The search bounds are inclusive.
         For the first call, bounds should be a list of tuples of bounds, of the form (lower, upper), one tuple for each
@@ -134,8 +135,12 @@ class NDNode:
         else:
             return self.EQUAL
 
-    """Returns what subspace of the node the passed subtree lies in."""
+    """Returns what subspace of the node the passed subtree lies in. Returns -1 if the Node is equal or if
+        incorrect data was passed"""
     def compare(self, subpoint):
+
+        if len(subpoint) != len(self.point):
+            return -1
 
         direction = ""
 
@@ -169,8 +174,8 @@ class NDNode:
     def insert(self, point):
         direction = self.compare(point)
 
-        # Insert an element that is already present
-        # We do not allow duplicates
+        # Insert an element that is already present or is not the right dimension.
+        # We do not allow duplicates.
         if direction == self.EQUAL:
             return 1
 
@@ -213,9 +218,9 @@ class NDNode:
 
         # Recursive case
         else:
-            return self.children[direction].contains(point)
+            return self.children[direction].search(point)
 
-    """TODO Helper method for the delete_helper() function."""
+    """Helper method for the delete_helper() function."""
     def reinsert(self, root):
         root.insert(self.point)
 
@@ -224,7 +229,7 @@ class NDNode:
             if not (node is None):
                 node.reinsert(root)
 
-    """TODO Helper method for the delete() function."""
+    """Helper method for the delete() function."""
     def delete_helper(self, point, parent, root):
         direction = self.compare(point)
 
@@ -250,8 +255,8 @@ class NDNode:
         else:
             return self.children[direction].delete_helper(point, self, root)
 
-    """TODO Relatively expensive. Deletes a passed point from the quad tree, returns success status.
-    Due to the reference to the tree being a QNode, there must always be at least one node in the tree.
+    """Relatively expensive. Deletes a passed point from the NDquad tree, returns success status.
+    Due to the reference to the tree being a NDNode, there must always be at least one node in the tree.
     Thus, it is enforced that one cannot delete the root."""
     def delete(self, point):
         direction = self.compare(point)
@@ -268,34 +273,13 @@ class NDNode:
         else:
             return self.children[direction].delete_helper(point, self, self)
 
-    """TODO Helper function for the tree_build() function."""
+    """Helper function for the tree_build() function."""
     def tree_helper(self, parent, qtree):
         direction = parent.compare(self.point)
 
         # Test direction, add appropriate label, call method on children.
-        if direction == self.NW:
-            qtree.create_node("NW/" + str(self.point), self.point, parent.point)
-
-            for node in self.children:
-                if not (node is None):
-                    node.tree_helper(self, qtree)
-
-        elif direction == self.NE:
-            qtree.create_node("NE/" + str(self.point), self.point, parent.point)
-
-            for node in self.children:
-                if not (node is None):
-                    node.tree_helper(self, qtree)
-
-        elif direction == self.SW:
-            qtree.create_node("SW/" + str(self.point), self.point, parent.point)
-
-            for node in self.children:
-                if not (node is None):
-                    node.tree_helper(self, qtree)
-
-        elif direction == self.SE:
-            qtree.create_node("SE/" + str(self.point), self.point, parent.point)
+        if direction != self.EQUAL:
+            qtree.create_node(str(bin(direction))+"/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
@@ -304,7 +288,7 @@ class NDNode:
         else:
             print("ERROR: equal comparison")
 
-    """TODO Returns a treelib tree of the node, used for illustration purposes."""
+    """Returns a treelib tree of the node, used for illustration purposes."""
     def tree_build(self):
         qtree = tl.Tree()
 

@@ -129,7 +129,7 @@ class QNode:
 
         # Recursive case
         else:
-            return self.children[direction].contains(point)
+            return self.children[direction].search(point)
 
     """Helper method for the delete_helper() function."""
     def reinsert(self, root):

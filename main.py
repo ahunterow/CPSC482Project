@@ -12,19 +12,16 @@ MAXUP = 10
 MAXDOWN = -10
 
 # root
-qtree = QNode((0, 0))
+qtree = NDNode((0, 0))
 
-# strong = ""
-# strung = "fgh"
-# strung[1] = "f"
-# print(strong + strung)
+# Testing functions for binary mapping
+# test = bin(4)
+# test = test[slice(2, len(test))]
+# test = test.zfill(8)
+# print(int(test, 2))
 
-test = bin(4)
-test = test[slice(2, len(test))]
-test = test.zfill(8)
-print(test)
-# test data
-# qtree.insert((-5,7))
+# Test data for a quad tree
+qtree.insert((-5,7))
 # qtree.insert((-3,-4))
 # qtree.insert((-4,4))
 # qtree.insert((4,3))
@@ -35,7 +32,7 @@ print(test)
 # qtree.insert((8,2))
 # qtree.insert((4,-7))
 # qtree.insert((-7,-8))
-#
+
 # tree = qtree.tree_build()
 # tree.save2file("qtreeTest")
 
@@ -44,8 +41,8 @@ print(test)
 # print(qtree.delete((8, -6)))
 # print(qtree.delete((-3, -4)))
 #
-# tree = qtree.tree_build()
-# tree.save2file("qtreeTest")
+tree = qtree.tree_build()
+tree.save2file("qtreeTest")
 
 # print(qtree.contains((-4,4)))
 
