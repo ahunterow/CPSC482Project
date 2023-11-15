@@ -44,7 +44,7 @@ class NDNode:
                 return -1
 
             # if point not in bounds
-            if not (point[index] >= bound[0]) and (point[index] <= bound[1]):
+            if not ((point[index] >= bound[0]) and (point[index] <= bound[1])):
                 within_region = False
                 break
 
@@ -56,8 +56,8 @@ class NDNode:
     """Tests if a region overlaps with the passed bounds. Bounds should be a list of tuples, 
         as should the region defined by test_bounds.
         Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
-        it follows that their must be as many tuples as dimensions in the point. Returns 1 if the overlaps
-        the bounds, 0 if the does not overlap the bounds, and -1 if an error occured."""
+        it follows that their must be as many tuples as dimensions in the point. Returns 1 if the region overlaps
+        the bounds, 0 if the region does not overlap the bounds, and -1 if an error occured."""
     def test_region_region(self, test_bounds, bounds):
 
         # Checking that the right number of bounds has been passed
@@ -83,6 +83,14 @@ class NDNode:
         else:
             return 0
 
+    """Takes a decimal direction index and maps it to a string of bits that represents comparisons."""
+    def to_bin_string(self, direction):
+        comparisons = bin(direction)
+        comparisons = comparisons[slice(2, len(comparisons))]  # Trim off the "0b" at the start.
+        comparisons = comparisons.zfill(self.dim)  # Add leading 0s on to the left as needed.
+
+        return comparisons
+
     """Fills a passed list with nodes within the passed region. The passed region is test_bounds, and it
         is a list of tuples of bounds, of the form (lower, upper), one tuple for each
         dimension of the data. The search bounds are inclusive.
@@ -91,7 +99,7 @@ class NDNode:
     def search_region(self, nodes, test_bounds, bounds):
 
         # if this node lies in the region
-        if self.test_point_region(self.point, test_bounds):
+        if self.test_point_region(self.point, test_bounds) == 1:
 
             nodes.append(self)
 
@@ -102,9 +110,7 @@ class NDNode:
             if not (child is None):
                 # Get the comparisons that are made to get into this direction
                 # This means taking the direction and mapping it to a string of bits
-                comparisons = bin(direction)
-                comparisons = comparisons[slice(2, len(comparisons))] # Trim off the "0b" at the start.
-                comparisons = comparisons.zfill(self.dim) # Add leading 0s on to the left as needed.
+                comparisons = self.to_bin_string(direction)
 
                 # Restrict bounds.
                 sub_bounds = bounds.copy()
@@ -120,7 +126,7 @@ class NDNode:
                         sub_bounds[index] = (self.point[index], bound[1])
 
                 # if the tested bounds fall in the subspace defined by sub_bounds.
-                if self.test_region_region(test_bounds, sub_bounds):
+                if self.test_region_region(test_bounds, sub_bounds) == 1:
                     # Recursive case.
                     child.search_region(nodes, test_bounds, sub_bounds)
 
@@ -170,7 +176,7 @@ class NDNode:
         return subspace
 
 
-    """Creates a node in the Qtree with the passed key. Returns success status."""
+    """Creates a node in the NDtree with the passed key. Returns success status."""
     def insert(self, point):
         direction = self.compare(point)
 
@@ -188,7 +194,7 @@ class NDNode:
         else:
             return self.children[direction].insert(point)
 
-    """Returns true if the point passed is in the quad tree."""
+    """Returns true if the point passed is in the NDNode tree."""
     def contains(self, point):
         direction = self.compare(point)
 
@@ -255,7 +261,7 @@ class NDNode:
         else:
             return self.children[direction].delete_helper(point, self, root)
 
-    """Relatively expensive. Deletes a passed point from the NDquad tree, returns success status.
+    """Relatively expensive. Delete is a passed point potentially in the NDNode tree, returns success status.
     Due to the reference to the tree being a NDNode, there must always be at least one node in the tree.
     Thus, it is enforced that one cannot delete the root."""
     def delete(self, point):
@@ -279,7 +285,9 @@ class NDNode:
 
         # Test direction, add appropriate label, call method on children.
         if direction != self.EQUAL:
-            qtree.create_node(str(bin(direction))+"/" + str(self.point), self.point, parent.point)
+            label = self.to_bin_string(direction)
+
+            qtree.create_node(label + "/" + str(self.point), self.point, parent.point)
 
             for node in self.children:
                 if not (node is None):
