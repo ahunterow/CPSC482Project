@@ -40,7 +40,7 @@ class NDNode:
         # Check each set of bounds
         for index, bound in enumerate(bounds):
             # Make sure we have valid bounds.
-            if not (bound[0] < bound[1]):
+            if not (bound[0] <= bound[1]):
                 return -1
 
             # if point not in bounds
@@ -70,7 +70,7 @@ class NDNode:
         # Check all dimensions for overlap
         for index, bound in enumerate(bounds):
             # Make sure we have valid bounds.
-            if not (bound[0] < bound[1]):
+            if not (bound[0] <= bound[1]):
                 return -1
 
             # if the region does not overlap.
