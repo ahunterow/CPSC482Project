@@ -1,7 +1,7 @@
 
 import treelib as tl
 
-"""Experimental. An attempt at an "N-dimensional quad tree," this class represents a Node within that tree,
+"""An attempt at an "N-dimensional quad tree," this class represents a Node within that tree,
 as well as the tree itself."""
 class NDNode:
 

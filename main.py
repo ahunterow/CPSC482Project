@@ -2,11 +2,10 @@
 
 import treelib as tl
 
-
 from QNode import *
 from NDNode import *
 
-# Constants for search_region's initial call.
+# Constants for search_region's initial call. These are just relative to the data we are using for the example.
 MAXLEFT = -10
 MAXRIGHT = 10
 MAXUP = 10
@@ -28,14 +27,17 @@ qtree.insert((8,2,0))
 qtree.insert((4,-7,1))
 qtree.insert((-7,-8,0))
 
+# Deletion tests
 # print(qtree.delete((0, 0, 0)))
 # print(qtree.delete((-5, 7, 0)))
 # print(qtree.delete((8, -6, 0)))
 # print(qtree.delete((-3, -4, 1)))
 
+# Output to file
 tree = qtree.tree_build()
 tree.save2file("qtreeTest")
 
+# Test the region searching
 nodes = []
 print("First")
 qtree.search_region(nodes, [(2, 9), (-3, 4),(0,0)], [(MAXDOWN, MAXUP), (MAXDOWN, MAXUP), (MAXDOWN, MAXUP)])
