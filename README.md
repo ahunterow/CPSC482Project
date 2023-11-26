@@ -6,6 +6,8 @@ Andrew Hunter-Owega
 
 CPSC 482
 
+Project README
+
 An implementation of a point-quad tree outlined in the paper by [1], as well as an N-dimensional quad tree.
 
 ## Dependencies
@@ -37,3 +39,5 @@ For additional information on the functions within, refer to each class. Above e
 ## Sources
 
 [1] R. A. Finkel and J. L. Bentley, “Quad trees a data structure for retrieval on Composite Keys,” Acta Informatica, vol. 4, no. 1, pp. 1–9, Mar. 1974. doi:10.1007/bf00288933
+
+treelib found at https://github.com/caesar0301/treelib
