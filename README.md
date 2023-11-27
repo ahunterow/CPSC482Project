@@ -13,7 +13,7 @@ An implementation of a point-quad tree outlined in the paper by [1], as well as 
 ## Dependencies
 
 This project uses "treelib," created by Xiaming Chen, for illustration and testing.
-The following is a screenshot from it's documentation on installation:
+The following is a screenshot from its documentation on installation:
 
 ![image](https://github.com/ahunterow/CPSC482Project/assets/115964818/2282b7f4-4698-4bf4-b256-3387f003ca1f)
 
