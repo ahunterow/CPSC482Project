@@ -22,11 +22,10 @@ class NDNode:
         for i in range(0, self.num_children):
             self.children.append(None)
 
-
     """Tests if a singular point is within the passed bounds. Bounds should be a list of tuples.
         Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
         it follows that their must be as many tuples as dimensions in the point. Returns 1 if the point 
-        is present in the bounds, 0 if the point is not in the bounds, and -1 if an error occured."""
+        is present in the bounds, 0 if the point is not in the bounds, and -1 if an error occurred."""
     def test_point_region(self, point, bounds):
 
         # Checking that the right number of bounds has been passed
@@ -56,7 +55,7 @@ class NDNode:
         as should the region defined by test_bounds.
         Each tuple represents the bounds for one dimension in the ordering (lower, upper). Thus,
         it follows that their must be as many tuples as dimensions in the point. Returns 1 if the region overlaps
-        the bounds, 0 if the region does not overlap the bounds, and -1 if an error occured."""
+        the bounds, 0 if the region does not overlap the bounds, and -1 if an error occurred."""
     def test_region_region(self, test_bounds, bounds):
 
         # Checking that the right number of bounds has been passed
@@ -129,7 +128,6 @@ class NDNode:
                     # Recursive case.
                     child.search_region(nodes, test_bounds, sub_bounds)
 
-
     """Helper method of compare, returns a value, LESS indicating val is less than the sub_val, 
         GREAT if val is greater than sub_val, and EQUAL if both arguments are equal."""
     def compare_val(self, val, sub_val):
@@ -173,7 +171,6 @@ class NDNode:
         subspace = int(direction, 2)
 
         return subspace
-
 
     """Creates a node in the NDtree with the passed key. Returns success status."""
     def insert(self, point):
