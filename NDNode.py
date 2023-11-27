@@ -10,7 +10,6 @@ class NDNode:
         self.children = []
         self.dim = len(self.point)
 
-        # CHECK THIS
         self.num_children = 2 ** self.dim
 
         # Equality constant
